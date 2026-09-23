@@ -1,0 +1,32 @@
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Builds
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Entorno (nunca subir secretos)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Cobertura / temporales
+coverage/
+.cache/
