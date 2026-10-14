@@ -1,4 +1,7 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
+import { ArchivePatientDto } from './dto/archive-patient.dto';
+import { ListPatientsDto } from './dto/list-patients.dto';
 import { AuthUser, CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
@@ -14,8 +17,8 @@ export class PatientsController {
   constructor(private readonly service: PatientsService) {}
 
   @Get()
-  findAll() {
-    return this.service.findAll();
+  findAll(@Query() query: ListPatientsDto, @CurrentUser() actor: AuthUser) {
+    return this.service.findAll(query.includeArchived === 'true', actor);
   }
 
   @Get(':id')
@@ -33,6 +36,20 @@ export class PatientsController {
   @Roles('admin', 'doctor', 'nurse', 'receptionist')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdatePatientDto, @CurrentUser() actor: AuthUser) {
     return this.service.update(id, dto, actor);
+  }
+
+  @Patch(':id/archive')
+  @Roles('admin')
+  archive(@Param('id', ParseIntPipe) id: number, @Body() dto: ArchivePatientDto,
+    @CurrentUser() actor: AuthUser, @Req() request: Request) {
+    return this.service.archive(id, dto, actor, request.ip);
+  }
+
+  @Patch(':id/restore')
+  @Roles('admin')
+  restore(@Param('id', ParseIntPipe) id: number, @CurrentUser() actor: AuthUser,
+    @Req() request: Request) {
+    return this.service.restore(id, actor, request.ip);
   }
 
   @Patch(':id/deceased')

@@ -1,6 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/modules/users/entities/user.entity';
 import { AuditableEntity } from 'src/common/base/auditable.entity';
 
+@Index('idx_patients_archived_id', ['isArchived', 'id'])
 @Entity('patients')
 export class Patient extends AuditableEntity {
   @PrimaryGeneratedColumn()
@@ -15,6 +17,7 @@ export class Patient extends AuditableEntity {
   @Column({ name: 'birth_date', type: 'date' })
   birthDate: string;
 
+  // Texto libre mientras no exista un vocabulario de genero acordado.
   @Column({ type: 'varchar', length: 20, nullable: true })
   gender: string | null;
 
@@ -32,6 +35,22 @@ export class Patient extends AuditableEntity {
 
   @Column({ name: 'is_deceased', type: 'boolean', default: false })
   isDeceased: boolean;
+
+  @Column({ name: 'is_archived', type: 'boolean', default: false })
+  isArchived: boolean;
+
+  @Column({ name: 'archived_at', type: 'datetime', precision: 6, nullable: true })
+  archivedAt: Date | null;
+
+  @Column({ name: 'archived_by_id', type: 'int', nullable: true })
+  archivedById: number | null;
+
+  @ManyToOne(() => User, { nullable: true, onDelete: 'RESTRICT', onUpdate: 'RESTRICT' })
+  @JoinColumn({ name: 'archived_by_id' })
+  archivedBy?: User | null;
+
+  @Column({ name: 'archive_reason', type: 'varchar', length: 500, nullable: true })
+  archiveReason: string | null;
 
   @Column({ name: 'deceased_at', type: 'datetime', nullable: true })
   deceasedAt: Date | null;

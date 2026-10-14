@@ -30,43 +30,44 @@ export class PrescriptionsService {
   }
 
   async create(dto: CreatePrescriptionDto, actor: AuthUser): Promise<Prescription> {
-    await this.patients.findById(dto.patientId);
-    if (dto.medicalHistoryId) await this.medicalHistory.findById(dto.medicalHistoryId);
-    // Valida que cada producto exista antes de emitir la receta.
-    for (const item of dto.items) await this.products.findById(item.pharmacyProductId);
+    return this.patients.withActivePatient(dto.patientId, async manager => {
+      if (dto.medicalHistoryId) await this.medicalHistory.findById(dto.medicalHistoryId);
+      // Valida que cada producto exista antes de emitir la receta.
+      for (const item of dto.items) await this.products.findById(item.pharmacyProductId);
 
-    const items = dto.items.map((item) =>
-      Object.assign(new PrescriptionItem(), {
-        pharmacyProductId: item.pharmacyProductId,
-        dosage: item.dosage ?? null,
-        frequency: item.frequency ?? null,
-        duration: item.duration ?? null,
-        quantity: item.quantity,
+      const items = dto.items.map((item) =>
+        Object.assign(new PrescriptionItem(), {
+          pharmacyProductId: item.pharmacyProductId,
+          dosage: item.dosage ?? null,
+          frequency: item.frequency ?? null,
+          duration: item.duration ?? null,
+          quantity: item.quantity,
+          createdById: actor.id,
+          updatedById: actor.id,
+        }),
+      );
+
+      // save() con cascade inserta receta + items en una sola transaccion.
+      const entity = this.repo.create({
+        patientId: dto.patientId,
+        doctorId: dto.doctorId,
+        medicalHistoryId: dto.medicalHistoryId ?? null,
+        issuedAt: new Date(),
+        notes: dto.notes ?? null,
+        items,
         createdById: actor.id,
         updatedById: actor.id,
-      }),
-    );
+      });
+      const saved = await this.repo.saveInTransaction(entity, manager);
 
-    // save() con cascade inserta receta + items en una sola transaccion.
-    const entity = this.repo.create({
-      patientId: dto.patientId,
-      doctorId: dto.doctorId,
-      medicalHistoryId: dto.medicalHistoryId ?? null,
-      issuedAt: new Date(),
-      notes: dto.notes ?? null,
-      items,
-      createdById: actor.id,
-      updatedById: actor.id,
+      await this.audit.recordInTransaction({
+        userId: actor.id,
+        action: 'CREATE',
+        entityName: 'prescriptions',
+        entityId: saved.id,
+        newValues: { patientId: dto.patientId, doctorId: dto.doctorId, items: dto.items.length },
+      }, manager);
+      return this.repo.findByIdInTransaction(saved.id, manager);
     });
-    const saved = await this.repo.save(entity);
-
-    await this.audit.record({
-      userId: actor.id,
-      action: 'CREATE',
-      entityName: 'prescriptions',
-      entityId: saved.id,
-      newValues: { patientId: dto.patientId, doctorId: dto.doctorId, items: dto.items.length },
-    });
-    return this.findById(saved.id);
   }
 }

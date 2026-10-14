@@ -12,6 +12,7 @@ export class Role extends TimestampEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string | null;
 
+  // Pendiente definir valores: no asumir activo/inactivo sin acuerdo de negocio.
   @Column({ type: 'int', default: 1 })
   status: number;
 }

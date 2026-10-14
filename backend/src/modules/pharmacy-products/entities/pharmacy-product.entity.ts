@@ -1,7 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Index, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AuditableEntity } from 'src/common/base/auditable.entity';
 import { ProductType } from 'src/modules/catalogs/entities/product-type.entity';
 
+@Index('idx_products_type', ['typeId'])
+@Index('idx_products_expiration', ['expirationDate'])
 @Entity('pharmacy_products')
 export class PharmacyProduct extends AuditableEntity {
   @PrimaryGeneratedColumn()
@@ -10,7 +12,7 @@ export class PharmacyProduct extends AuditableEntity {
   @Column({ name: 'type_id', type: 'int' })
   typeId: number;
 
-  @ManyToOne(() => ProductType, { eager: true })
+  @ManyToOne(() => ProductType, { eager: true, nullable: false, onDelete: 'RESTRICT', onUpdate: 'RESTRICT' })
   @JoinColumn({ name: 'type_id' })
   type?: ProductType;
 
@@ -20,7 +22,7 @@ export class PharmacyProduct extends AuditableEntity {
   @Column({ type: 'varchar', length: 150, nullable: true })
   manufacturer: string | null;
 
-  @Column({ name: 'stock_quantity', type: 'int', default: 0 })
+  @Column({ name: 'stock_quantity', type: 'int', unsigned: true, default: 0 })
   stockQuantity: number;
 
   @Column({ type: 'varchar', length: 30, nullable: true })
