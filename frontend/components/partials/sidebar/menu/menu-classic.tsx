@@ -16,9 +16,6 @@ import { useConfig } from "@/hooks/use-config";
 import MenuLabel from "../common/menu-label";
 import MenuItem from "../common/menu-item";
 import { CollapseMenuButton } from "../common/collapse-menu-button";
-import MenuWidget from "../common/menu-widget";
-import SearchBar from '@/components/partials/sidebar/common/search-bar'
-import TeamSwitcher from '../common/team-switcher'
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation'
 import { getLangDir } from 'rtl-detect';
@@ -71,19 +68,7 @@ export function MenuClassic({ }) {
 
 
             <ScrollArea className="[&>div>div[style]]:block!" dir={direction}>
-                {isDesktop && (
-                    <div className={cn(' space-y-3 mt-6 ', {
-                        'px-4': !collapsed || hovered,
-                        'text-center': collapsed || !hovered
-                    })}>
-
-                        <TeamSwitcher />
-                        <SearchBar />
-                    </div>
-
-                )}
-
-                <nav className="mt-8 h-full w-full">
+                <nav className="mt-6 h-full w-full">
                     <ul className=" h-full flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-4">
                         {menuList?.map(({ groupLabel, menus }, index) => (
                             <li className={cn("w-full", groupLabel ? "" : "")} key={index}>
@@ -144,11 +129,6 @@ export function MenuClassic({ }) {
 
                             </li>
                         ))}
-                        {!collapsed && (
-                            <li className="w-full grow flex items-end">
-                                <MenuWidget />
-                            </li>
-                        )}
                     </ul>
                 </nav>
 

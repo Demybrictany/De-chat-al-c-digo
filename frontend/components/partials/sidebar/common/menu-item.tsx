@@ -62,7 +62,7 @@ const MenuItem = ({
         color={active ? "default" : "secondary"}
         fullWidth
                      className={cn(
-                                          "hover:ring-transparent hover:ring-offset-0 justify-start text-sm font-medium capitalize group md:hover:px-8 h-auto py-3 md:px-3 px-3",
+                                          "hover:ring-transparent hover:ring-offset-0 justify-start text-sm font-medium group md:hover:px-8 h-auto py-3 md:px-3 px-3",
                                           {
                                             "bg-secondary text-default hover:bg-secondary":
                                               active && config.sidebarColor !== "light",
@@ -108,7 +108,7 @@ const MenuItem = ({
         fullWidth
         color={active ? "default" : "secondary"}
         className={cn(
-          "hover:ring-transparent hover:ring-offset-0 flex-col h-auto py-1.5 px-3.5 capitalize font-semibold",
+          "hover:ring-transparent hover:ring-offset-0 flex-col h-auto py-1.5 px-3.5 font-semibold",
           {
             "bg-secondary text-default hover:bg-secondary":
               active && config.sidebarColor !== "light",
@@ -133,7 +133,7 @@ const MenuItem = ({
       fullWidth
       color={active ? "default" : "secondary"}
       className={cn("hover:ring-transparent hover:ring-offset-0", {
-        "justify-start text-sm font-medium capitalize h-auto py-3 md:px-3 px-3":
+        "justify-start text-sm font-medium h-auto py-3 md:px-3 px-3":
           !collapsed || hovered,
         "bg-secondary text-default hover:bg-secondary":
           active && config.sidebarColor !== "light",
