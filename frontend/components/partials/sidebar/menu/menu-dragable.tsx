@@ -21,9 +21,6 @@ import MenuLabel from "../common/menu-label";
 
 import MenuItem from "../common/menu-item";
 import { CollapseMenuButton } from "../common/collapse-menu-button";
-import MenuWidget from "../common/menu-widget";
-import SearchBar from '@/components/partials/sidebar/common/search-bar'
-import TeamSwitcher from '../common/team-switcher'
 
 // for dnd 
 import {
@@ -113,16 +110,6 @@ export function MenuDragAble() {
             </div>
 
             <ScrollArea className="[&>div>div[style]]:block!" dir={direction}>
-                <div className={cn(' space-y-3 mt-6 ', {
-                    'px-4': !collapsed,
-                    'text-center': collapsed
-                })}>
-
-                    <TeamSwitcher />
-                    <SearchBar />
-                </div>
-
-
                 <DndContext
                     collisionDetection={closestCenter}
                     modifiers={[restrictToVerticalAxis]}
@@ -189,11 +176,6 @@ export function MenuDragAble() {
                                     </SortableContext>
                                 </li>
                             ))}
-                            {!collapsed && (
-                                <li className="w-full grow flex items-end">
-                                    <MenuWidget />
-                                </li>
-                            )}
                         </ul>
                     </nav>
                 </DndContext>

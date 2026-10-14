@@ -22,7 +22,7 @@ const ThemeButton = () => {
                 <Button size="icon" rounded="full" className=" md:bg-secondary bg-transparent  text-secondary-foreground hover:ring-0  md:h-8 md:w-8 h-auto w-auto  hover:bg-secondary hover:ring-offset-0">
                     <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 " />
                     <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="sr-only">Toggle theme</span>
+                    <span className="sr-only">Cambiar tema</span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="p-2">
@@ -36,7 +36,7 @@ const ThemeButton = () => {
                     )}
                 >
                     <Icon icon="heroicons-outline:sun" className="w-5 h-5 me-2" />
-                    <span className="me-2">Light</span>
+                    <span className="me-2">Claro</span>
                     <Check
                         className={cn("w-4 h-4 flex-none ms-auto ", {
                             hidden: theme !== "light",
@@ -54,7 +54,7 @@ const ThemeButton = () => {
                 >
 
                     <Icon icon="heroicons-outline:moon" className="w-5 h-5 me-2" />
-                    <span className="me-2">Dark</span>
+                    <span className="me-2">Oscuro</span>
                     <Check
                         className={cn("w-4 h-4 flex-none ms-auto text-default-700", {
                             hidden: theme !== "dark",
@@ -71,7 +71,7 @@ const ThemeButton = () => {
                     )}
                 >
                     <Icon icon="heroicons:computer-desktop" className="w-5 h-5 me-2" />
-                    <span className="me-2">system</span>
+                    <span className="me-2">Sistema</span>
                     <Check
                         className={cn("w-4 h-4 flex-none ms-auto text-default-700", {
                             hidden: theme !== "system",
