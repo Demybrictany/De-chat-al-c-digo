@@ -1,9 +1,11 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Index, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from 'src/modules/users/entities/user.entity';
 
 export type AuditAction = 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGIN_FAILED';
 
 /** Bitacora inmutable: solo se inserta, nunca se actualiza ni se borra. */
+@Index('idx_audit_entity_created', ['entityName', 'entityId', 'createdAt'])
+@Index('idx_audit_user_created', ['userId', 'createdAt'])
 @Entity('audit_logs')
 export class AuditLog {
   @PrimaryGeneratedColumn()
@@ -12,7 +14,7 @@ export class AuditLog {
   @Column({ name: 'user_id', type: 'int', nullable: true })
   userId: number | null;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { nullable: true, onDelete: 'RESTRICT', onUpdate: 'RESTRICT' })
   @JoinColumn({ name: 'user_id' })
   user?: User;
 

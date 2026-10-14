@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { BaseRepository } from 'src/common/base/base.repository';
 import { Prescription } from './entities/prescription.entity';
 
@@ -11,6 +11,14 @@ export class PrescriptionsRepository extends BaseRepository<Prescription> {
     repo: Repository<Prescription>,
   ) {
     super(repo);
+  }
+
+  saveInTransaction(entity: Prescription, manager: EntityManager): Promise<Prescription> {
+    return manager.getRepository(Prescription).save(entity);
+  }
+
+  findByIdInTransaction(id: number, manager: EntityManager): Promise<Prescription> {
+    return manager.getRepository(Prescription).findOneOrFail({ where: { id }, relations: { items: true } });
   }
 
   findByPatient(patientId: number): Promise<Prescription[]> {

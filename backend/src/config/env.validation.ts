@@ -10,7 +10,7 @@ class EnvVars {
   @IsNotEmpty() @IsString() JWT_SECRET: string;
   @IsOptional() @IsString() JWT_EXPIRES_IN: string;
   @IsOptional() @IsNumberString() PORT: string;
-  @IsOptional() @IsIn(['true', 'false']) DB_SYNCHRONIZE: string;
+  @IsOptional() @IsIn(['false']) DB_SYNCHRONIZE: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

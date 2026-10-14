@@ -10,14 +10,14 @@ export abstract class AuditableEntity extends TimestampEntity {
   @Column({ name: 'created_by_id', type: 'int' })
   createdById: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { nullable: false, onDelete: 'RESTRICT', onUpdate: 'RESTRICT' })
   @JoinColumn({ name: 'created_by_id' })
   createdBy?: User;
 
   @Column({ name: 'updated_by_id', type: 'int', nullable: true })
   updatedById: number | null;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { nullable: true, onDelete: 'RESTRICT', onUpdate: 'RESTRICT' })
   @JoinColumn({ name: 'updated_by_id' })
   updatedBy?: User;
 }

@@ -34,27 +34,28 @@ export class AppointmentsService {
   }
 
   async create(dto: CreateAppointmentDto, actor: AuthUser): Promise<Appointment> {
-    await this.patients.findById(dto.patientId);
-    const status = await this.statusByName(DEFAULT_STATUS);
-    const entity = this.repo.create({
-      patientId: dto.patientId,
-      doctorId: dto.doctorId,
-      statusId: status.id,
-      scheduledAt: new Date(dto.scheduledAt),
-      reason: dto.reason ?? null,
-      notes: dto.notes ?? null,
-      createdById: actor.id,
-      updatedById: actor.id,
+    return this.patients.withActivePatient(dto.patientId, async manager => {
+      const status = await this.statusByName(DEFAULT_STATUS);
+      const entity = this.repo.create({
+        patientId: dto.patientId,
+        doctorId: dto.doctorId,
+        statusId: status.id,
+        scheduledAt: new Date(dto.scheduledAt),
+        reason: dto.reason ?? null,
+        notes: dto.notes ?? null,
+        createdById: actor.id,
+        updatedById: actor.id,
+      });
+      const saved = await this.repo.saveInTransaction(entity, manager);
+      await this.audit.recordInTransaction({
+        userId: actor.id,
+        action: 'CREATE',
+        entityName: 'appointments',
+        entityId: saved.id,
+        newValues: { ...dto },
+      }, manager);
+      return saved;
     });
-    const saved = await this.repo.save(entity);
-    await this.audit.record({
-      userId: actor.id,
-      action: 'CREATE',
-      entityName: 'appointments',
-      entityId: saved.id,
-      newValues: { ...dto },
-    });
-    return saved;
   }
 
   async update(id: number, dto: UpdateAppointmentDto, actor: AuthUser): Promise<Appointment> {

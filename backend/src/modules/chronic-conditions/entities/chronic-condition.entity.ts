@@ -1,7 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Index, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AuditableEntity } from 'src/common/base/auditable.entity';
 import { Patient } from 'src/modules/patients/entities/patient.entity';
 
+@Index('idx_conditions_patient_active', ['patientId', 'isActive'])
 @Entity('chronic_conditions')
 export class ChronicCondition extends AuditableEntity {
   @PrimaryGeneratedColumn()
@@ -10,7 +11,7 @@ export class ChronicCondition extends AuditableEntity {
   @Column({ name: 'patient_id', type: 'int' })
   patientId: number;
 
-  @ManyToOne(() => Patient)
+  @ManyToOne(() => Patient, { nullable: false, onDelete: 'RESTRICT', onUpdate: 'RESTRICT' })
   @JoinColumn({ name: 'patient_id' })
   patient?: Patient;
 
@@ -20,6 +21,7 @@ export class ChronicCondition extends AuditableEntity {
   @Column({ name: 'diagnosed_at', type: 'date', nullable: true })
   diagnosedAt: string | null;
 
+  // Texto libre: no se ha definido una escala cerrada de severidad.
   @Column({ type: 'varchar', length: 30, nullable: true })
   severity: string | null;
 

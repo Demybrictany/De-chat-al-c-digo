@@ -11,7 +11,9 @@ export function buildTypeOrmOptions(config: ConfigService): TypeOrmModuleOptions
     database: config.get<string>('DB_DATABASE'),
     // Carga automatica de todas las entidades registradas con forFeature.
     autoLoadEntities: true,
-    // Solo dev: crea/actualiza el esquema desde las entidades. Nunca en produccion.
-    synchronize: config.get<string>('DB_SYNCHRONIZE') === 'true',
+    // El esquema se administra exclusivamente con migraciones explicitas.
+    synchronize: false,
+    migrationsRun: false,
+    dropSchema: false,
   };
 }
